@@ -1,0 +1,1 @@
+arm-none-eabi-nm build\release\ndac6416.elf

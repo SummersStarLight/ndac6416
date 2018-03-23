@@ -1,0 +1,1 @@
+C:\STM32ToolchainOx\openocd\bin\openocd.exe -f C:\STM32ToolchainOx\openocd\scripts\interface\stlink-v2-1.cfg -f C:\STM32ToolchainOx\openocd\scripts\target\stm32f7x.cfg
