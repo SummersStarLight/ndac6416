@@ -4,32 +4,27 @@
 //      2.  2 8-channel 16-bit LTC1859 ADC chips connected to SPI channels 2 and 3
 //      3.  Signal conectioners for frequency counters on TIM2 channels 1-4 and TIM5 channels 1-4.
 
-// mbed-cli comopile notes:
-// the newlib-nano specs are in release.json
-// python ../mbed.py compile --stats-depth=100 --profile=./release.json -t GCC_ARM -m NUCLEO_F767ZI
-// do not use newlib-nano if using Mbed's RTOS.
-// python ../mbed.py add https://github.com/janjongboom/mbed-coremark-lm32-printf
-// mbed add https://github.com/nuket/mbed-memory-status.git mbed-memory-status
-// python ../mbed.py compile --clean --stats-depth=100 --profile=./mbed-os/tools/profiles/debug.json -t GCC_ARM -m NUCLEO_F767ZI --build=./build/debug
-// The mbed systick normally uses TIM5.  It has been changed to TIM7 so we can use TIM5 which is
-// a 32-bit timer. The change is at:
-//   .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\hal_tick.h
-// To get correct pin mapping for SPI and GPIO change this:
-//   .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c
-
+// To install:
+//   1. Must have mbed-cli and Python 2.7.11 installed, see https://github.com/ARMmbed/mbed-cli.  Get the latest version using "pip install mbed-cli".  See
+//      above the above mbed-cli link for installing GCC_ARM.
+//   2. Create a the ndac6416 project:  "mbed new ndac6416"
+//   3. Go to the ndac6416 folder and run "git clone https://github.com/mikeredbike/ndac6416"
+//   4. Run "copychanges"
+//   5. Add memory-status: "mbed add https://github.com/nuket/mbed-memory-status"
+//   6. To compile to release "makerls"
+//   7. To compile to debug "makedbg"
+// Notes:
+// 1.  copychanges changes the following files:
+//     The mbed systick normally uses TIM5.  It has been changed to TIM7 so we can use TIM5 which is a 32-bit timer. The change is at:
+//       .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\hal_tick.h
+//     To get correct pin mapping for SPI and GPIO change this:
+//       .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c
 #include "mbed.h"
 #include "rtos.h"
 #include "mbed_memory_status.h"
 
-//Serial pc(USBTX, USBRX);
-//Serial uart(p28, p27);
-// change stdout to LCD
-// freopen("/lcd", "w", stdout);
-
 Serial pc(SERIAL_TX, SERIAL_RX); // this is PD8 and PD9
 Timer timer;
-
-
 
 DigitalOut dac_nclr(PE_7);
 DigitalOut myled(LED1);
@@ -42,7 +37,7 @@ DigitalOut myled(LED1);
 #include "envelope.h"
 #include "functimer.h"
 
-#if 1 // for these to work modifications must be made to mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c
+// for these to work  copytargetchanges has modified .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c:
 
 SPI spi1(PD_7,  PG_9,  PG_11); //SPI(MOSI, MISO, SCLK); -> DAC16-31 ok
 DigitalOut spi1_nss(PG_10);
@@ -61,33 +56,6 @@ DigitalOut spi5_nss(PF_6);
 
 SPI spi6(PG_14, PG_12, PG_13, PG_8); //SPI(MOSI, MISO, SCLK); -> DAC48-63 ok
 DigitalOut spi6_nss(PG_8);
-
-#else // these work except PA_5 has to be used by both spi1 and spi6
-
-// crash: (d7, g9, g11), (b5, g9, g11), (a7, g9, g11), (a7, a6, g11), (d7, a6, a5), (a7,g9, a5)
-// ok:    (a7, b4, a5)
-SPI spi1(PA_7,  PA_6,  PA_5); //SPI(MOSI, MISO, SCLK); -> DAC16-31 OK
-DigitalOut spi1_nss(PG_10);
-
-// crash: (b15,b14, b13)
-// oK:    (c3, c2, b13)
-SPI spi2(PB_15, PC_2,  PB_13); //SPI(MOSI, MISO, SCLK); -> ADC0-7   OK
-DigitalOut spi2_nss(PB_9);
-
-SPI spi3(PC_12, PC_11, PC_10); //SPI(MOSI, MISO, SCLK); -> ADC8-15  OK
-DigitalOut spi3_nss(PA_4);
-
-SPI spi4(PE_6,  PE_5,  PE_2);  //SPI(MOSI, MISO, SCLK); -> DAC32-47  OK
-DigitalOut spi4_nss(PE_4);
-
-SPI spi5(PF_9,  PF_8,  PF_7);  //SPI(MOSI, MISO, SCLK); -> DAC0-15  OK
-DigitalOut spi5_nss(PF_6);
-
-// crash: (g14, g12, g13) (b5, b4, g13)
-// ok:    (b5, b4, b3)
-SPI spi6(PB_5,  PB_4,  PA_5); //SPI(MOSI, MISO, SCLK); -> DAC48-63  OK
-DigitalOut spi6_nss(PG_8);
-#endif
 
 voltspan span = { .low=-5, .high=5};
 DigitalIn adc0_nbusy(PG_0, PullUp);
@@ -222,22 +190,6 @@ void SetupSPIs(void) {
     spi6.frequency(5000000);
 }
 
-/*
-volatile static uint32_t ticks = 0 ;
-
-void RtosInc( void const* )
-{
-    ticks++;
-}
-
-RtosTimer rtostimer(RtosInc, osTimerPeriodic, 0);
-
-void TicksInc()
-{
-    ticks++;
-}
-Ticker ticker;
-*/
 void Tuneups0(void) { VCOS[0]->Tuneups(.02, false); }
 void Tuneups1(void) { VCOS[1]->Tuneups(.02, false); }
 void Tuneups2(void) { VCOS[2]->Tuneups(.02, false); }
@@ -260,8 +212,8 @@ int main() {
     stderr = pc;
 
     c = getchar("check it out");
-    print_all_thread_info();
-    print_heap_and_isr_stack_info();
+    //print_all_thread_info();
+    //print_heap_and_isr_stack_info();
     printf("\r\n\r\n\r\n\r\n\r\nXSTEPMULS ********************* \r\n");
     printf("%d %d %d %d %d %d %d %d\r\n",
         XSTEPMULS[0], XSTEPMULS[1],
@@ -375,9 +327,9 @@ int main() {
     env4.Add(3,7, 7,7, 13, 1, -1, NULL);
 
     c=getchar("ft0.Start");
-    ft0.Start();
-    printf("ft0 %s\n\r", ft0.print());
-    ft0.Stop();
+    //ft0.Start();
+    //printf("ft0 %s\n\r", ft0.print());
+    //ft0.Stop();
     c=getchar("set VCOs");
     for (int i=0; i<NUMBERDACS; i++) if (DACS[i]) DACS[i]->Voct(i+2, 0);
     c=getchar("VCOs set to octaves");
@@ -417,7 +369,7 @@ int main() {
            thread4.start(callback(Tuneups4));
            Thread thread5;
            thread5.start(callback(Tuneups5));
-           print_all_thread_info();
+           //print_all_thread_info();
            printf("thread0 %d\n\r", thread0.join());
            printf("thread1 %d\n\r", thread1.join());
            printf("thread2 %d\n\r", thread2.join());
@@ -496,7 +448,9 @@ int main() {
            while(!env1.Next()) wait(.05);
            printf("\n\r");
        }
-       print_all_thread_info();
-       print_heap_and_isr_stack_info();
+       if (c==0x39) {
+           print_all_thread_info();
+           print_heap_and_isr_stack_info();
+       }
    }
 }

@@ -40,7 +40,6 @@
 #define MBED_CONF_TARGET_LOWPOWERTIMER_LPTIM              1                            // set by target:NUCLEO_F767ZI
 #define MBED_CONF_DRIVERS_UART_SERIAL_RXBUF_SIZE          256                          // set by library:drivers
 #define MBED_CONF_NSAPI_PRESENT                           1                            // set by library:nsapi
-#define HAS_FLOAT                                         0                            // set by library:mbed-coremark-printf
 #define MBED_CONF_FILESYSTEM_PRESENT                      1                            // set by library:filesystem
 #define MBED_CONF_LWIP_IP_VER_PREF                        4                            // set by library:lwip
 #define MBED_CONF_APP_MAIN_STACK_SIZE                     8192                         // set by application
