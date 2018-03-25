@@ -1,2 +1,2 @@
 copy PeripheralPins.c.cpy .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.copy
-copy hal_tick.h.cpy .\mbed\ndac6416\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\hal_tick.h
+copy hal_tick.h.cpy .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\hal_tick.h

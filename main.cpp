@@ -6,9 +6,9 @@
 
 // To install:
 //   1. Must have mbed-cli and Python 2.7.11 installed, see https://github.com/ARMmbed/mbed-cli.  Get the latest version using "pip install mbed-cli".  See
-//      above the above mbed-cli link for installing GCC_ARM.
-//   2. Create a the ndac6416 project:  "mbed new ndac6416"
-//   3. Go to the ndac6416 folder and run "git clone https://github.com/mikeredbike/ndac6416"
+//      the mbed-cli link for installing GCC_ARM.
+//   2. Create a the ndac6416 project:  "git clone https://github.com/mikeredbike/ndac6416 ndac6416"
+//   3. Go to the ndac6416 folder and run "git clone -b latest https://github.com/ARMmbed/mbed-os"
 //   4. Run "copychanges"
 //   5. Add memory-status: "mbed add https://github.com/nuket/mbed-memory-status"
 //   6. To compile to release "makerls"
