@@ -26,16 +26,18 @@ It is required to install mbed-cli on your development machine.  Drivers, RTOS a
 dependencies are in the 'mbed-os' folder.  Here are the steps:
 
     1. Must have mbed-cli and Python 2.7.11 installed, see https://github.com/ARMmbed/mbed-cli.  Get the latest version using "pip install mbed-cli".  See the mbed-cli link for installing GCC_ARM.
-    2. Create a the ndac6416 project:  "git clone https://github.com/mikeredbike/ndac6416 ndac6416"
-    3. Go to the ndac6416 folder and run "git clone -b latest https://github.com/ARMmbed/mbed-os"
-    4. Run "copychanges"
+    2. Create a the ndac6416 project:  "git clone https://github.com/mikeredbike/ndac6416 ndac6416".
+    3. Go to the ndac6416 folder and run "git clone -b latest https://github.com/ARMmbed/mbed-os".
+    4. Run "copychanges".
     5. Add memory-status: "mbed add https://github.com/nuket/mbed-memory-status"
-    6. To compile to release "makerls"
-    7. To compile to debug "makedbg"
+    6. To compile to release "makerls".
+    7. To compile to debug "makedbg".
 
 Notes:
-    1.  "copychanges" modifies the following files:
-        a.  File .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\hal_tick.h
+
+    A.  "copychanges" modifies the following files:
+
+        1.  File .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\hal_tick.h
         normally uses uses TIM5.  It has been changed to TIM7 so we can use TIM5 which is a 32-bit timer.      
-        b. File.\mbed-os\.....\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c must be
+        2. File.\mbed-os\.....\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c must be
         modified to get correct SPI and GPIO pin-mapping.
