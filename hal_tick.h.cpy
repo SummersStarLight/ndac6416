@@ -42,14 +42,13 @@
 #include "stm32f7xx.h"
 #include "stm32f7xx_ll_tim.h"
 #include "cmsis_nvic.h"
+#define TIM_MST      TIM4
+#define TIM_MST_IRQ  TIM4_IRQn
+#define TIM_MST_RCC  __TIM4_CLK_ENABLE()
+#define TIM_MST_DBGMCU_FREEZE  __HAL_DBGMCU_FREEZE_TIM4()
 
-#define TIM_MST      TIM7
-#define TIM_MST_IRQ  TIM7_IRQn
-#define TIM_MST_RCC  __TIM7_CLK_ENABLE()
-#define TIM_MST_DBGMCU_FREEZE  __HAL_DBGMCU_FREEZE_TIM7()
-
-#define TIM_MST_RESET_ON   __TIM7_FORCE_RESET()
-#define TIM_MST_RESET_OFF  __TIM7_RELEASE_RESET()
+#define TIM_MST_RESET_ON   __TIM4_FORCE_RESET()
+#define TIM_MST_RESET_OFF  __TIM4_RELEASE_RESET()
 
 #define TIM_MST_16BIT  1 // 1=16-bit timer, 0=32-bit timer
 

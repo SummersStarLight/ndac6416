@@ -234,5 +234,15 @@ void LTC2668::Voct(int8_t octave, int8_t halfstep, bool clr) {
     }
 }
 
+void LTC2668::Vmidi(int8_t midinumber, bool clr) {
+    if (m_vco) {
+        if (clr) m_vco->Clr();
+        midinumber = midinumber<9?9:midinumber;
+        midinumber -= 9;
+        m_voct_octave = midinumber/12, m_voct_halfstep = midinumber%12;
+        Vout(m_vco->Dinh(m_voct_octave, m_voct_halfstep), false); // No Adjustments can occur here because Vmidi is called in ShowMessages
+    }
+}
+
 
 

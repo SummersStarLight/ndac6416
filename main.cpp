@@ -11,8 +11,9 @@
 //   3. Go to the ndac6416 folder and run "git clone -b latest https://github.com/ARMmbed/mbed-os"
 //   4. Run "copychanges"
 //   5. Add memory-status: "mbed add https://github.com/nuket/mbed-memory-status"
-//   6. To compile to release "makerls"
-//   7. To compile to debug "makedbg"
+//   6. Add MIDI: "mbed add http://os.mbed.com/users/Kojto/code/USBDevice/"
+//   7. To compile to release "makerls"
+//   8. To compile to debug "makedbg"
 // Notes:
 // 1.  copychanges changes the following files:
 //     The mbed systick normally uses TIM5.  It has been changed to TIM7 so we can use TIM5 which is a 32-bit timer. The change is at:
@@ -20,6 +21,7 @@
 //     To get correct pin mapping for SPI and GPIO change this:
 //       .\mbed-os\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c
 #include "mbed.h"
+#include "USBMIDI.h"  // uses pa8 thru pa12
 #include "rtos.h"
 #include "mbed_memory_status.h"
 
@@ -86,6 +88,33 @@ LTC2668 d2(2, &spi5, &spi5_nss, NULL, true, 9);
 LTC2668 d3(3, &spi5, &spi5_nss, NULL, true, 9);
 LTC2668 d4(4, &spi5, &spi5_nss, NULL, true, 9);
 LTC2668 d5(5, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d6(6, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d7(7, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d8(8, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d9(9, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d10(10, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d11(11, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d12(12, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d13(13, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d14(14, &spi5, &spi5_nss, NULL, true, 9);
+LTC2668 d15(15, &spi5, &spi5_nss, NULL, true, 9);
+
+LTC2668 d16(16, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d17(17, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d18(18, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d19(19, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d20(20, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d21(21, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d22(22, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d23(23, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d24(24, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d25(25, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d26(26, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d27(27, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d28(28, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d29(29, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d30(30, &spi4, &spi4_nss, NULL, true, 9);
+LTC2668 d31(31, &spi4, &spi4_nss, NULL, true, 9);
 
 // You can only attach static functions to NVIC_SetVector. Cannot use non-static member functions.  https://os.mbed.com/questions/69315/NVIC-Set-Vector-in-class/
 uint32_t irqcounter = 0;
@@ -115,15 +144,25 @@ FreqChannel ch5(GPIOA, &t1, RCC_AHB1ENR_GPIOAEN,  1, 5, &TIM5->CCR2, 2);
 //FreqChannel ch6(GPIOA, &t1, RCC_AHB1ENR_GPIOAEN,  2, 6, &TIM5->CCR3, 2);
 //FreqChannel ch7(GPIOA, &t1, RCC_AHB1ENR_GPIOAEN,  3, 7, &TIM5->CCR4, 2);
 
-volatile static uint32_t funccounter = 0;
+volatile static uint32_t funccounter0 = 0;
 
-static void FIRQ1() {
+static void FIRQ0() {
     functimer0->irq_ic_timer();
-    funccounter++;
+    funccounter0++;
 }
 
-FuncTimer ft0(TIM3, RCC_APB1ENR_TIM3EN, TIM3_IRQn, (uint32_t)&FIRQ1, FREQUENCY/10000 - 1, 1000, 0);
+FuncTimer ft0(TIM3, RCC_APB1ENR_TIM3EN, TIM3_IRQn, (uint32_t)&FIRQ0, FREQUENCY/10000 - 1, 1000, 0);
 FuncTimer *functimer0 = &ft0;
+
+volatile static uint32_t funccounter1 = 0;
+
+static void FIRQ1() {
+    functimer1->irq_ic_timer();
+    funccounter1++;
+}
+
+FuncTimer ft1(TIM7, RCC_APB1ENR_TIM7EN, TIM7_IRQn, (uint32_t)&FIRQ1, FREQUENCY/40000 - 1, 1000, 0);
+FuncTimer *functimer1 = &ft1;
 
 
 void timerdump(typeof(TIM2) timer)
@@ -143,9 +182,9 @@ int getchar(const char *msg = NULL) {
     } else {
         printf("%s\n\r", msg);
     }
-    int c = pc.getc();
-    printf("Typed %d\n\r", c);
-    return c;
+    //int c = pc.getc();
+    //printf("Typed %d\n\r", c);
+    return pc.getc();
 }
 
 DigitalOut irqled(LED2);
@@ -196,11 +235,82 @@ void Tuneups2(void) { VCOS[2]->Tuneups(.02, false); }
 void Tuneups3(void) { VCOS[3]->Tuneups(.02, false); }
 void Tuneups4(void) { VCOS[4]->Tuneups(.02, false); }
 void Tuneups5(void) { VCOS[5]->Tuneups(.02, false); }
-Envelope env0 = envtst(&d0, true, true);
-Envelope env1 = Envelope(&d1, true, false);
-Envelope env2 = Envelope(&d2, true, false);
-Envelope env3 = Envelope(&d3, true, false);
-Envelope env4 = Envelope(&d4, true, false);
+Envelope env0 = envtst(0, &d0, true, true);
+Envelope env1 = Envelope(1, &d1, true, false);
+Envelope env2 = Envelope(2, &d2, true, false);
+Envelope env3 = Envelope(3, &d3, true, false);
+Envelope env4 = Envelope(4, &d4, true, false);
+// VCAs
+Adsr adsr0 = Adsr(0, &d6, false, false);
+Adsr adsr1 = Adsr(1, &d10, false, false);
+// VCFs
+Adsr adsr2 = Adsr(2, &d7, false, false);
+Adsr adsr3 = Adsr(3, &d11, false, false);
+
+void show_message(MIDIMessage msg) {
+    //int t = (int)msg.type();
+    switch (msg.type()) {
+        case MIDIMessage::NoteOnType:
+            //printf("NoteOn key:%d, velocity: %d, channel: %d\n\r", msg.key(), msg.velocity(), msg.channel());
+            if (msg.channel() < NUMBERVCOS) {
+                VCOS[msg.channel()]->Getdac()->Vmidi(msg.key());
+                if (msg.channel() == 0) {
+                    ADSRS[0]->Restart();
+                    ADSRS[2]->Restart();
+                }
+                else if (msg.channel() == 1) {
+                    ADSRS[1]->Restart();
+                    ADSRS[3]->Restart();
+                }
+            }
+            break;
+        case MIDIMessage::NoteOffType:
+            //printf("NoteOff key:%d, velocity: %d, channel: %d\n\r", msg.key(), msg.velocity(), msg.channel());
+            if (msg.channel() == 0) {
+                ADSRS[0]->Release();
+                ADSRS[2]->Release();
+            }
+            if (msg.channel() == 1) {
+                ADSRS[1]->Release();
+                ADSRS[3]->Release();
+            }
+            break;
+        case MIDIMessage::ControlChangeType:    
+            //printf("ControlChange controller: %d, data: %d\n\r", msg.controller(), msg.value());
+            break;
+        case MIDIMessage::PitchWheelType:
+            //printf("PitchWheel channel: %d, pitch: %d\n\r", msg.channel(), msg.pitch());
+            break;
+        default:
+            //printf("Another message %d\n\r", (int)msg.type());
+            break;
+    }    
+}
+           
+void Triads(int8_t octave) {
+    DACS[0]->Voct(octave, 0);
+    DACS[1]->Voct(octave, 4);
+    DACS[2]->Voct(octave, 7);
+    DACS[3]->Voct(octave+1, 0);
+    DACS[4]->Voct(octave+1, 4);
+    DACS[5]->Voct(octave+1, 7);
+}
+
+void Octaves(void) {
+    DACS[0]->Voct(2, 0);
+    DACS[1]->Voct(3, 0);
+    DACS[2]->Voct(4, 0);
+    DACS[3]->Voct(5, 0);
+    DACS[4]->Voct(6, 0);
+    DACS[5]->Voct(7, 0);
+}
+
+void VCFSet(void) {
+    DACS[7]->Vout(0x4000);  // Channel 1 VCF LP
+    DACS[8]->Vout(0xf000);  // Channel 1 VCF Q
+    DACS[11]->Vout(0x4000); // Channel 2 VCF LP
+    DACS[12]->Vout(0xf000); // Channel 2 VCF Q
+}
 
 int main() {
     int c = 0, cnt = 0;
@@ -221,17 +331,22 @@ int main() {
         XSTEPMULS[4000], XSTEPMULS[4001],
         XSTEPMULS[6000], XSTEPMULS[6001]
     );
+    printf("init midi");
+    USBMIDI midi;
+    printf("midi defined\n\r"); 
+    midi.attach(show_message);  // call back for messages received    
+
 
     IRQBlinkerThread.start(callback(IRQBlinker));
     dac_nclr = true;  // enable the dacs, this has to come before the DAC spans get set.
     printf("dac_nclr is high\r\n");
-
+    
     SetupSPIs();
     voltspan span = { .low=-5, .high=5};
     for (int i=0; i<NUMBERDACS; i++) {
         if (DACS[i])  {
             DACS[i]->Setspan(span);
-            DACS[i]->Vchk(6528*(i+2));
+            DACS[i]->Vchk(6528*(i%8));
         }
     }
 
@@ -326,13 +441,40 @@ int main() {
     env4.Add(8,0, 3,0, 10, 1, -1, NULL);
     env4.Add(3,7, 7,7, 13, 1, -1, NULL);
 
-    c=getchar("ft0.Start");
+    //VCA ADSRs
+    ft1.Add(&adsr0);
+    adsr0.Add(0x4000, 0xffff, 1, 1, -1, NULL);
+    adsr0.Add(0xff00, 0xa000, 1, 1, -1, NULL);
+    adsr0.Add(0xa000, 0x3000, 4, 1, -1, NULL);
+    ft1.Add(&adsr1);
+    adsr1.Add(0x4000, 0xffff, 1, 1, -1, NULL);
+    adsr1.Add(0xff00, 0xa000, 1, 1, -1, NULL);
+    adsr1.Add(0xa000, 0x3000, 4, 1, -1, NULL);
+    //VCF ADSRs
+    ft1.Add(&adsr2);
+    adsr2.Add(0x4000, 0x7000, 1, 1, -1, NULL);
+    adsr2.Add(0x7000, 0x4000, 1, 1, -1, NULL);
+    adsr2.Add(0x3f00, 0x3000, 4, 1, -1, NULL);
+    ft1.Add(&adsr3);
+    adsr3.Add(0x4000, 0x7000, 1, 1, -1, NULL);
+    adsr3.Add(0x7000, 0x4000, 1, 1, -1, NULL);
+    adsr3.Add(0x3f00, 0x3000, 4, 1, -1, NULL);
+    printf("\n\rENVS\n\r");
+    for (int i=0; i<NUMBERENVS; i++) if (ENVS[i]) ENVS[i]->Info();
+    printf("\n\rADSRS\n\r");
+    for (int i=0; i<NUMBERADSRS; i++) if (ADSRS[i]) ADSRS[i]->Info();
+    //c=getchar("ft0.Start");
     //ft0.Start();
     //printf("ft0 %s\n\r", ft0.print());
     //ft0.Stop();
-    c=getchar("set VCOs");
-    for (int i=0; i<NUMBERDACS; i++) if (DACS[i]) DACS[i]->Voct(i+2, 0);
-    c=getchar("VCOs set to octaves");
+    c=getchar("set DACs");
+    for (int i=0; i<NUMBERDACS; i++) {
+        if (DACS[i]) {
+            DACS[i]->Vout((i%8)*6528 , false);
+            printf("(%d %d %d)", (i%8)*6528, DACS[i]->m_dacnum, DACS[i]->Getvoutdin());
+        }
+    }
+    c=getchar("\n\rAscending DACs");
     while (1) {
        c=getchar(NULL);
        if (c==0x30) {
@@ -382,21 +524,11 @@ int main() {
                }
            }
            //for (int tritone=4; tritone < 19; tritone++) v0.TritoneOffsetsDump(tritone);
-           d0.Voct(3, 0);
-           d1.Voct(3, 4);
-           d2.Voct(3, 7);
-           d3.Voct(4, 0);
-           d4.Voct(4, 4);
-           d5.Voct(4, 7);
+           Triads(3);
        }
        if (c==0x32) {
            ft0.Stop();
-           d0.Voct(3, 0);
-           d1.Voct(3, 4);
-           d2.Voct(3, 7);
-           d3.Voct(4, 0);
-           d4.Voct(4, 4);
-           d5.Voct(4, 7);
+           Triads(3);
            for (int i=0; i<2; i++) {
                printf("\n\r");
                for (int i=0; i<NUMBERVCOS; i++) if (VCOS[i]) VCOS[i]->MiniDump();
@@ -404,7 +536,7 @@ int main() {
        }
        if (c==0x33) {
            ft0.Stop();
-           for (int i=0; i<NUMBERDACS; i++) if (DACS[i]) DACS[i]->Wadj(true);
+           for (int i=0; i<NUMBERVCOS; i++) if (VCOS[i]) VCOS[i]->Getdac()->Wadj(true);
        }
        if (c==0x34) {
            //printf("A0 busy %d\n\r", a0.Busy());
@@ -415,12 +547,7 @@ int main() {
        }
        if (c==0x35) {
            ft0.Stop();
-           d0.Voct(2, 0);
-           d1.Voct(3, 0);
-           d2.Voct(4, 0);
-           d3.Voct(5, 0);
-           d4.Voct(6, 0);
-           d5.Voct(7, 0);
+           Octaves();
            for (int i=0; i<NUMBERVCOS; i++) if (VCOS[i]) VCOS[i]->MiniDump();
        }
        if (c==0x36) {
@@ -434,12 +561,12 @@ int main() {
           //rtostimer.start(40);
           //ticks = 0;
           ft0.Start();
-          printf("%d %s", funccounter, ft0.print());
-          funccounter = 0;
+          printf("%d %s", funccounter0, ft0.print());
+          funccounter0 = 0;
           wait(1);
-          fcnt = funccounter;
-          printf("%d %s", funccounter, ft0.print());
-          printf("funccounter %d\n\r", fcnt);
+          fcnt = funccounter0;
+          printf("%d %s", funccounter0, ft0.print());
+          printf("funccounter0 %d\n\r", fcnt);
        }
        if (c==0x38) {
            ft0.Stop();
@@ -447,10 +574,59 @@ int main() {
            printf("\n\r");
            while(!env1.Next()) wait(.05);
            printf("\n\r");
-       }
-       if (c==0x39) {
            print_all_thread_info();
            print_heap_and_isr_stack_info();
        }
+       if (c==0x39) {
+           ft0.Stop();
+           for (int i=0; i<6; i++) DACS[i]->Voct(4, 7); // All VCO set the same
+           VCFSet();
+           while(1) {
+               c=getchar("Choose DAC");
+               if (c=='q') break;
+               char buffer[50];
+               char *hexString = (char *)"0"; 
+               hexString[0] = c;
+               int dac; 
+               sscanf(hexString, "%x", &dac);
+               printf("DAC %d\n\r", dac);
+               int32_t vout = 0, inc = 0x1000;
+               while(1) {
+                    DACS[dac]->Vout(vout);
+                    sprintf(buffer, "%d. 0x%x ... Next, Previous, Quit", dac, vout&0xffff);
+                    c = getchar(buffer);
+                    if (c=='q') break;
+                    if (c=='n') inc = 0x1000;
+                    else inc=-0x1000;
+                    vout += inc;
+               }
+           }
+       }
+       if (c=='a') {
+           ft0.Stop();
+           Triads(4);
+           VCFSet();
+           ft1.Start();
+           adsr0.Dump();
+           adsr0.Info();
+           while(1) {
+              c=getchar("Restart or Quit");
+              if (c=='q') break;
+              adsr0.Restart();
+              adsr1.Restart();
+              //while(!adsr0.Next()) wait(.01);
+              //printf("\n\rm_segcnt %d\n\r", adsr0.m_segcnt);
+              c=getchar("Release, Quit or Dump");
+              if (c=='q') break;
+              adsr0.Release(0);
+              adsr1.Release(0);
+              if (c=='d') {
+                  print_all_thread_info();
+                  print_heap_and_isr_stack_info();
+              }
+              //while(!adsr0.Next()) wait(.01);
+           }
+       }
+       ft1.Stop();
    }
 }

@@ -54,7 +54,7 @@ void Segment::Set(bool set) {
         m_envelope->GetDAC()->Vout(m_point);
         if (m_function) m_function();
     }
-    if (m_envelope->m_printit) printf("%d ", m_point);
+    if (m_envelope->m_printit) printf("(%d %d) ", m_point, m_envelope->m_segcnt);
     m_lastpoint = m_point;
 }
 
@@ -76,12 +76,15 @@ bool Segment::Next(bool set) {
     return false;
 }
 
-Envelope::Envelope(LTC2668 *dac, bool repeat, bool printit, begfunctype begfunction, endfunctype endfunction) {
+ENVPtr *ENVS = new ENVPtr[NUMBERENVS]();
+
+Envelope::Envelope(int8_t num, LTC2668 *dac, bool repeat, bool printit, begfunctype begfunction, endfunctype endfunction) {
     m_dac = dac;      // points to an object with 'Vout' method
     m_repeat = repeat, m_printit = printit;
     m_begfunction = begfunction, m_endfunction = endfunction;
     std::vector<Segment>(m_segments).swap(m_segments); // clear and shrink vector of list of pointers to a line segment
     // .h:  std::vector<Segment> m_segments; // list of line segment
+    if (num != -1) ENVS[num] = this;
     Start();
 }
 
@@ -98,8 +101,8 @@ void Envelope::Start(void) {
 }
 
 void Envelope::Info(void) {
-    printf("%s, Segments: %d, SCnt: %d, RCnt: %d, Stop: %s, Repeat: %s, Finished: %d\n\r",
-        m_dac,
+    printf("%2d, Segments: %d, SCnt: %d, RCnt: %d, Stop: %d, Repeat: %d, Finished: %d\n\r",
+        m_dac->m_dacnum,
         m_segments.size(),
         m_segcnt,
         m_repeats,
@@ -184,13 +187,37 @@ void Envelope::Dump(void) {
     }
 }
 
-Adsr::Adsr(LTC2668 *dac, bool repeat, bool printit, begfunctype begfunction, endfunctype endfunction)
-   : Envelope(dac, repeat, printit, begfunction, endfunction) {
+ADSRPtr *ADSRS = new ADSRPtr[NUMBERADSRS]();
+
+Adsr::Adsr(int8_t num, LTC2668 *dac, bool repeat, bool printit, begfunctype begfunction, endfunctype endfunction)
+   : Envelope(-1, dac, repeat, printit, begfunction, endfunction) {
+    ADSRS[num] = this;
+}
+
+bool Adsr::Next(void) { // step through all the line segments, return true when finished
+    if (!m_stopflag) {
+        //printf("Next0 %d %d %d\n\r", Finished(), m_segcnt, m_attack);
+        if (!Finished() && m_segments[m_segcnt].Next()) m_segcnt += 1;
+        //printf("Next1 %d %d %d\n\r", Finished(), m_segcnt, m_attack);
+        if (Finished()) {
+            if (m_repeat) {
+                Restart();
+            } else {
+                if (m_endfunction && !m_funcalled && !m_attack) {
+                    m_funcalled = true;
+                    m_endfunction();
+                }
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Adsr::Finished(void) {
     if (m_attack) {
-       return m_segcnt >= (2<m_segments.size()?2:m_segments.size());
+       //printf("finished %d\n\r", m_segments.size()>2?2:m_segments.size());
+       return m_segcnt >= (m_segments.size()>2?2:m_segments.size());
     } else {
        return m_segcnt >= m_segments.size();
     }
@@ -222,10 +249,10 @@ void Adsr::Release(bool wait) {
     m_attack = false; // if true will run to the second segment, if false will run to the third
 }
 
-Envelope envtst(LTC2668 *dac, bool repeat, bool printit) {
-   Envelope env = Envelope(dac=dac, repeat=repeat, printit=printit);
-   env.Add(3000, 30000, 10);
-   env.Add(20000, 2000, 5);
+Envelope envtst(int8_t num, LTC2668 *dac, bool repeat, bool printit) {
+   Envelope env = Envelope(num, dac, repeat, printit);
+   env.Add(3000, 30000, 10, 1, -1, NULL);
+   env.Add(20000, 2000, 5, 1, -1, NULL);
    env.Dump();
    return env;
 }

@@ -67,6 +67,7 @@ public:
     void Vout(int32_t din, bool adjust=false); // Send digital input value to the DAC.
                                                // Default to no adjustment.
     void Voct(int8_t octave, int8_t halfstep, bool clr=false);
+    void Vmidi(int8_t midinumber, bool clr=false);
     int16_t GetVOUT(void);
     int32_t Getvoutdin(void);
     int32_t Getvoctdin(void);

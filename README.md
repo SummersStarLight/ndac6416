@@ -18,7 +18,8 @@ The software uses the 'mbed-os' platform and drivers.  Software includes:
     6.  The Segment class is used by the Envelope class to generate voltage control waveforms.  The
     ADSR class is a subclass of the Envelope class and generates the classic Attack, Decay, Sustain,
     and Release waveform.
-    7.  the FuncTimer class uses the STM32F767 16-bit timers to call Envelope functions in real-time.
+    7.  The FuncTimer class uses the STM32F767 16-bit timers to call Envelope functions in real-time.
+    8.  The USBMIDI class receives MIDI instructions from the USB connector CN13 on the NUCLEO-F767 board.
 
 Installation Procedure
 
@@ -30,8 +31,9 @@ dependencies are in the 'mbed-os' folder.  Here are the steps:
     3. Go to the ndac6416 folder and run "git clone -b latest https://github.com/ARMmbed/mbed-os".
     4. Run "copychanges".
     5. Add memory-status: "mbed add https://github.com/nuket/mbed-memory-status"
-    6. To compile to release "makerls".
-    7. To compile to debug "makedbg".
+    6. Add MIDI: "mbed add http://os.mbed.com/users/Kojto/code/USBDevice/"
+    7. To compile to release "makerls".
+    8. To compile to debug "makedbg".
 
 Notes:
 

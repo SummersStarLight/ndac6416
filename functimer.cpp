@@ -104,29 +104,15 @@ uint16_t FuncTimer::overflow(void)
 
 void FuncTimer::irq_ic_timer(void)
 {
-    if (m_timer->SR & TIM_SR_UIF){             // 32bit counter overflow
+    if (m_timer->SR & TIM_SR_UIF){             // counter overflow
         m_timer->SR &= ~TIM_SR_UIF;
         ++m_overflow;
-        for (m_envcnt = 0; m_envcnt<m_envelopes.size(); m_envcnt++) m_envelopes[m_envcnt]->Next();
-        for (m_adsrcnt = 0; m_adsrcnt<m_adsrs.size(); m_adsrcnt++) m_adsrs[m_adsrcnt]->Next();
+        for (m_envcnt = 0; m_envcnt<m_envelopes.size(); m_envcnt++) {
+            if (!m_envelopes[m_envcnt]->m_stopflag) m_envelopes[m_envcnt]->Next();
+        }
+        for (m_adsrcnt = 0; m_adsrcnt<m_adsrs.size(); m_adsrcnt++) {
+            if (!m_adsrs[m_adsrcnt]->m_stopflag) m_adsrs[m_adsrcnt]->Next();
+        }
     }
-    /*
-    if (m_timer->SR & TIM_SR_CC1IF) {
-        m_timer->SR &= ~TIM_SR_CC1IF;  // clear IC flag
-        ++m_s1;
-    }
-    if (m_timer->SR & TIM_SR_CC2IF) {
-        m_timer->SR &= ~TIM_SR_CC2IF;  // clear IC flag
-        ++m_s2;
-    }
-    if (m_timer->SR & TIM_SR_CC3IF) {
-        m_timer->SR &= ~TIM_SR_CC3IF;  // clear IC flag
-        ++m_s3;
-    }
-    if (m_timer->SR & TIM_SR_CC4IF) {
-        m_timer->SR &= ~TIM_SR_CC4IF;  // clear IC flag
-        ++m_s4;
-    }
-    */
 }
 

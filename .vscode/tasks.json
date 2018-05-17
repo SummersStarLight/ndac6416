@@ -20,7 +20,7 @@
         {
             "label": "make release",
             "type": "shell",
-            "command": "python ../mbed.py compile -D MBED_STACK_STATS_ENABLED=1 --stats-depth=100 --profile=./mbed-os/tools/profiles/release.json -t GCC_ARM -m NUCLEO_F767ZI --build=./build/release",
+            "command": "makerls.cmd",
             "args": [],
             "group": {
                 "kind": "build",
@@ -30,7 +30,7 @@
         {
             "label": "make debug",
             "type": "shell",
-            "command": "python ../mbed.py compile -D MBED_STACK_STATS_ENABLED=1 --stats-depth=100 --profile=./mbed-os/tools/profiles/debug.json -t GCC_ARM -m NUCLEO_F767ZI --build=./build/debug",
+            "command": "makedbg.cmd",
             "args": [],
             "group": {
                 "kind": "build",
@@ -41,7 +41,7 @@
         {
             "label": "copy release",
             "type": "shell",
-            "command": "copy ./build/release/mbed-os-program.bin m:/mbed-os-program.bin",
+            "command": "copyrls.cmd",
             "args": [],
             "group": {
                 "kind": "build",

@@ -190,5 +190,11 @@ build\release\main.o: main.cpp build/release\mbed_config.h mbed-os/mbed.h \
  mbed-os/platform/FileHandle.h mbed-os/platform/DirHandle.h \
  mbed-os/platform/CriticalSectionLock.h mbed-os/platform/DeepSleepLock.h \
  mbed-os/platform/Callback.h mbed-os/platform/FunctionPointer.h \
+ USBDevice/USBMIDI/USBMIDI.h USBDevice/USBDevice/USBEndpoints.h \
+ USBDevice/targets/TARGET_STM/USBEndpoints_STM32.h \
+ USBDevice/USBDevice/USBDescriptor.h \
+ USBDevice/USBDevice/USBDevice_Types.h USBDevice/USBDevice/USBDevice.h \
+ USBDevice/USBDevice/USBDevice_Types.h USBDevice/USBDevice/USBHAL.h \
+ USBDevice/USBDevice/USBEndpoints.h USBDevice/USBMIDI/MIDIMessage.h \
  mbed-os/rtos/rtos.h mbed-memory-status/mbed_memory_status.h main.h \
  freq.h vco.h dac.h adc.h envelope.h functimer.h

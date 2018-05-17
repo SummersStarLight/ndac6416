@@ -1,10 +1,50 @@
 [
     {
+        "module": "USBDevice\\USBAudio\\USBAudio.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 118
+        }
+    }, 
+    {
+        "module": "USBDevice\\USBDevice\\USBDevice.o", 
+        "size": {
+            ".data": 98, 
+            ".bss": 6, 
+            ".text": 1874
+        }
+    }, 
+    {
+        "module": "USBDevice\\USBHID\\USBKeyboard.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 34
+        }
+    }, 
+    {
+        "module": "USBDevice\\USBMIDI\\USBMIDI.o", 
+        "size": {
+            ".data": 135, 
+            ".bss": 0, 
+            ".text": 546
+        }
+    }, 
+    {
+        "module": "USBDevice\\targets\\TARGET_STM\\USBHAL_STM32.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 4, 
+            ".text": 1852
+        }
+    }, 
+    {
         "module": "[fill]", 
         "size": {
-            ".data": 12, 
-            ".bss": 22, 
-            ".text": 206
+            ".data": 15, 
+            ".bss": 24, 
+            ".text": 209
         }
     }, 
     {
@@ -144,6 +184,22 @@
         }
     }, 
     {
+        "module": "[lib]\\c.a\\lib_a-gdtoa-gethex.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 1744
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-gdtoa-hexnan.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 464
+        }
+    }, 
+    {
         "module": "[lib]\\c.a\\lib_a-impure.o", 
         "size": {
             ".data": 1068, 
@@ -168,11 +224,19 @@
         }
     }, 
     {
+        "module": "[lib]\\c.a\\lib_a-iswspace.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 28
+        }
+    }, 
+    {
         "module": "[lib]\\c.a\\lib_a-locale.o", 
         "size": {
             ".data": 364, 
             ".bss": 0, 
-            ".text": 40
+            ".text": 76
         }
     }, 
     {
@@ -180,7 +244,7 @@
         "size": {
             ".data": 0, 
             ".bss": 0, 
-            ".text": 28
+            ".text": 32
         }
     }, 
     {
@@ -221,6 +285,14 @@
             ".data": 1040, 
             ".bss": 52, 
             ".text": 1352
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-mbrtowc.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 93
         }
     }, 
     {
@@ -268,7 +340,7 @@
         "size": {
             ".data": 0, 
             ".bss": 0, 
-            ".text": 1800
+            ".text": 2476
         }
     }, 
     {
@@ -328,6 +400,14 @@
         }
     }, 
     {
+        "module": "[lib]\\c.a\\lib_a-sccl.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 112
+        }
+    }, 
+    {
         "module": "[lib]\\c.a\\lib_a-setbuf.o", 
         "size": {
             ".data": 0, 
@@ -344,6 +424,14 @@
         }
     }, 
     {
+        "module": "[lib]\\c.a\\lib_a-sf_nan.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 8
+        }
+    }, 
+    {
         "module": "[lib]\\c.a\\lib_a-sprintf.o", 
         "size": {
             ".data": 0, 
@@ -352,11 +440,19 @@
         }
     }, 
     {
+        "module": "[lib]\\c.a\\lib_a-sscanf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 88
+        }
+    }, 
+    {
         "module": "[lib]\\c.a\\lib_a-stdio.o", 
         "size": {
             ".data": 0, 
             ".bss": 0, 
-            ".text": 136
+            ".text": 140
         }
     }, 
     {
@@ -392,6 +488,46 @@
         }
     }, 
     {
+        "module": "[lib]\\c.a\\lib_a-strtod.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 3998
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-strtol.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 328
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-strtoll.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 448
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-strtoul.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 368
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-strtoull.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 496
+        }
+    }, 
+    {
         "module": "[lib]\\c.a\\lib_a-svfiprintf.o", 
         "size": {
             ".data": 0, 
@@ -400,11 +536,35 @@
         }
     }, 
     {
+        "module": "[lib]\\c.a\\lib_a-svfiscanf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 304
+        }
+    }, 
+    {
         "module": "[lib]\\c.a\\lib_a-svfprintf.o", 
         "size": {
             ".data": 0, 
             ".bss": 0, 
             ".text": 5186
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-svfscanf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 3555
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-ungetc.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 120
         }
     }, 
     {
@@ -684,15 +844,15 @@
         "size": {
             ".data": 4, 
             ".bss": 4, 
-            ".text": 1312
+            ".text": 1386
         }
     }, 
     {
         "module": "envelope.o", 
         "size": {
             ".data": 4, 
-            ".bss": 0, 
-            ".text": 1779
+            ".bss": 8, 
+            ".text": 2269
         }
     }, 
     {
@@ -708,15 +868,15 @@
         "size": {
             ".data": 4, 
             ".bss": 0, 
-            ".text": 826
+            ".text": 1020
         }
     }, 
     {
         "module": "main.o", 
         "size": {
-            ".data": 18, 
-            ".bss": 4188, 
-            ".text": 6495
+            ".data": 22, 
+            ".bss": 7088, 
+            ".text": 8498
         }
     }, 
     {
@@ -764,7 +924,7 @@
         "size": {
             ".data": 0, 
             ".bss": 0, 
-            ".text": 286
+            ".text": 256
         }
     }, 
     {
@@ -884,7 +1044,7 @@
         "size": {
             ".data": 0, 
             ".bss": 0, 
-            ".text": 518
+            ".text": 514
         }
     }, 
     {
@@ -924,7 +1084,7 @@
         "size": {
             ".data": 4, 
             ".bss": 304, 
-            ".text": 1231
+            ".text": 1319
         }
     }, 
     {
@@ -1132,7 +1292,7 @@
         "size": {
             ".data": 1, 
             ".bss": 4, 
-            ".text": 82
+            ".text": 118
         }
     }, 
     {
@@ -1149,6 +1309,22 @@
             ".data": 0, 
             ".bss": 0, 
             ".text": 116
+        }
+    }, 
+    {
+        "module": "mbed-os\\targets\\TARGET_STM\\TARGET_STM32F7\\device\\stm32f7xx_hal_pcd.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 2544
+        }
+    }, 
+    {
+        "module": "mbed-os\\targets\\TARGET_STM\\TARGET_STM32F7\\device\\stm32f7xx_hal_pcd_ex.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 110
         }
     }, 
     {
@@ -1172,7 +1348,7 @@
         "size": {
             ".data": 0, 
             ".bss": 0, 
-            ".text": 1276
+            ".text": 1288
         }
     }, 
     {
@@ -1213,6 +1389,14 @@
             ".data": 0, 
             ".bss": 0, 
             ".text": 1089
+        }
+    }, 
+    {
+        "module": "mbed-os\\targets\\TARGET_STM\\TARGET_STM32F7\\device\\stm32f7xx_ll_usb.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 1992
         }
     }, 
     {
@@ -1324,13 +1508,13 @@
         "size": {
             ".data": 4, 
             ".bss": 8, 
-            ".text": 2467
+            ".text": 2471
         }
     }, 
     {
         "summary": {
-            "static_ram": 31472, 
-            "total_flash": 84062
+            "static_ram": 34632, 
+            "total_flash": 109116
         }
     }
 ]
