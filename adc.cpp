@@ -21,48 +21,61 @@ LTC1859::LTC1859(int8_t adcnum,
     ADCS[m_adcnum] = this;
 }
 
-void LTC1859::Setspan(voltspan span) {
+void LTC1859::Setspan(voltspan span)
+{
     m_span = span;
-    bool uni=true, gain=false;
-    if (m_span.low == 0 && m_span.high == 5) {
-       uni=true, gain=false;
-    } else if(m_span.low == 0 && m_span.high == 10) {
-       uni=true, gain=true;
-    } else if(m_span.low == -5 && m_span.high == 5) {
-       uni=false, gain=false;
-    } else if(m_span.low == -10 && m_span.high == 10) {
-       uni=false, gain=true;
+    bool uni = true, gain = false;
+    if (m_span.low == 0 && m_span.high == 5)
+    {
+        uni = true, gain = false;
     }
-    m_dataword  = 0x80;                   // sgl/diff, always run in single mode
-    m_dataword |= (m_adcnum & 1)?0x40:0;  // odd sign (a0)
-    m_dataword |= (m_adcnum & 4)?0x20:0;  // select 1 (a2)
-    m_dataword |= (m_adcnum & 2)?0x10:0;  // select 0 (a1)
-    m_dataword |= uni?0x08:0;             // uni
-    m_dataword |= gain?0x04:0;            // gain
+    else if (m_span.low == 0 && m_span.high == 10)
+    {
+        uni = true, gain = true;
+    }
+    else if (m_span.low == -5 && m_span.high == 5)
+    {
+        uni = false, gain = false;
+    }
+    else if (m_span.low == -10 && m_span.high == 10)
+    {
+        uni = false, gain = true;
+    }
+    m_dataword = 0x80;                       // sgl/diff, always run in single mode
+    m_dataword |= (m_adcnum & 1) ? 0x40 : 0; // odd sign (a0)
+    m_dataword |= (m_adcnum & 4) ? 0x20 : 0; // select 1 (a2)
+    m_dataword |= (m_adcnum & 2) ? 0x10 : 0; // select 0 (a1)
+    m_dataword |= uni ? 0x08 : 0;            // uni
+    m_dataword |= gain ? 0x04 : 0;           // gain
     m_send[0] = m_dataword;
     m_send[1] = 0;
 }
 
-uint16_t LTC1859::Vin1(void) {
+uint16_t LTC1859::Vin1(void)
+{
     m_spinss->write(0);
     m_spi->write(m_send, 2, m_recv, 2);
     m_spinss->write(1);
-    m_vin = ((uint8_t)m_recv[0]<<8) + (uint8_t)m_recv[1];
+    m_vin = ((uint8_t)m_recv[0] << 8) + (uint8_t)m_recv[1];
     // sign extend
-    if(m_span.low != 0)  m_vin = (m_vin & 0x7fff) - (m_vin & 0x8000);
-    return(m_vin);
+    if (m_span.low != 0)
+        m_vin = (m_vin & 0x7fff) - (m_vin & 0x8000);
+    return (m_vin);
 }
 
-void LTC1859::Vchk(void) {
-    int8_t b1, b2, b3, b4, cnt1=100, cnt2=100;
+void LTC1859::Vchk(void)
+{
+    int8_t b1, b2, b3, b4, cnt1 = 100, cnt2 = 100;
     b3 = m_busy->read();
-    while(!m_busy->read() && cnt2--);
+    while (!m_busy->read() && cnt2--)
+        ;
     b4 = m_busy->read();
     m_spinss->write(0);
     m_spi->write(m_send, 2, m_recv, 2);
     m_spinss->write(1);
     b1 = m_busy->read();
-    while(!m_busy->read() && cnt1--);
+    while (!m_busy->read() && cnt1--)
+        ;
     b2 = m_busy->read();
     m_spinss->write(0);
     m_spi->write(m_send, 2, m_recv, 2);
@@ -79,16 +92,16 @@ void LTC1859::Vchk(void) {
            b1, b2, cnt1, b3, b4, cnt2);
 }
 
-uint16_t LTC1859::Vin(void) {
+uint16_t LTC1859::Vin(void)
+{
     Vin1();
-    while(!m_busy->read());
+    while (!m_busy->read())
+        ;
     m_vin = Vin1();
-    return(m_vin);
+    return (m_vin);
 }
 
-bool LTC1859::Busy(void) {
-    return(!m_busy->read());
-
+bool LTC1859::Busy(void)
+{
+    return (!m_busy->read());
 }
-
-

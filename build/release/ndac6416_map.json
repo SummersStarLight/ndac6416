@@ -43,8 +43,16 @@
         "module": "[fill]", 
         "size": {
             ".data": 15, 
-            ".bss": 24, 
-            ".text": 209
+            ".bss": 28, 
+            ".text": 263
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-abort.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 16
         }
     }, 
     {
@@ -432,6 +440,22 @@
         }
     }, 
     {
+        "module": "[lib]\\c.a\\lib_a-signal.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 104
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-signalr.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 44
+        }
+    }, 
+    {
         "module": "[lib]\\c.a\\lib_a-sprintf.o", 
         "size": {
             ".data": 0, 
@@ -648,6 +672,30 @@
         }
     }, 
     {
+        "module": "[lib]\\gcc.a\\libunwind.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 428
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\pr-support.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 884
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\unwind-arm.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 2540
+        }
+    }, 
+    {
         "module": "[lib]\\m.a\\lib_a-e_log.o", 
         "size": {
             ".data": 0, 
@@ -832,6 +880,158 @@
         }
     }, 
     {
+        "module": "[lib]\\nosys.a\\getpid.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 16
+        }
+    }, 
+    {
+        "module": "[lib]\\nosys.a\\kill.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 16
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\bad_alloc.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 116
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\class_type_info.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 342
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\del_ops.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 4
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_alloc.o", 
+        "size": {
+            ".data": 4, 
+            ".bss": 16, 
+            ".text": 364
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_arm.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 400
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_call.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 312
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_catch.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 264
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_exception.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 206
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_globals.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 12, 
+            ".text": 16
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_personality.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 1648
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_term_handler.o", 
+        "size": {
+            ".data": 4, 
+            ".bss": 0, 
+            ".text": 0
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_terminate.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 120
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_throw.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 324
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\eh_unex_handler.o", 
+        "size": {
+            ".data": 4, 
+            ".bss": 0, 
+            ".text": 0
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\functexcept.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 32
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\si_class_type_info.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 373
+        }
+    }, 
+    {
+        "module": "[lib]\\stdc++.a\\tinfo.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 73
+        }
+    }, 
+    {
         "module": "adc.o", 
         "size": {
             ".data": 4, 
@@ -844,7 +1044,7 @@
         "size": {
             ".data": 4, 
             ".bss": 4, 
-            ".text": 1386
+            ".text": 1714
         }
     }, 
     {
@@ -852,7 +1052,7 @@
         "size": {
             ".data": 4, 
             ".bss": 8, 
-            ".text": 2269
+            ".text": 2479
         }
     }, 
     {
@@ -868,15 +1068,15 @@
         "size": {
             ".data": 4, 
             ".bss": 0, 
-            ".text": 1020
+            ".text": 1304
         }
     }, 
     {
         "module": "main.o", 
         "size": {
             ".data": 22, 
-            ".bss": 7088, 
-            ".text": 8498
+            ".bss": 7688, 
+            ".text": 9462
         }
     }, 
     {
@@ -1084,7 +1284,7 @@
         "size": {
             ".data": 4, 
             ".bss": 304, 
-            ".text": 1319
+            ".text": 1341
         }
     }, 
     {
@@ -1512,9 +1712,17 @@
         }
     }, 
     {
+        "module": "waves.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 712
+        }
+    }, 
+    {
         "summary": {
-            "static_ram": 34632, 
-            "total_flash": 109116
+            "static_ram": 35276, 
+            "total_flash": 120344
         }
     }
 ]

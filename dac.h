@@ -6,7 +6,7 @@
 class VCO;
 
 #define NUMBERDACS 64
-typedef LTC2668* DACPtr;
+typedef LTC2668 *DACPtr;
 extern DACPtr *DACS;
 
 struct voltspan
@@ -15,7 +15,15 @@ struct voltspan
     int8_t high;
 };
 
-struct OffsetVals {
+enum NextState
+{
+    NextPoint,
+    NextHold,
+    NextEnd
+};
+
+struct OffsetVals
+{
     int16_t newoffset;
     int32_t newdin;
     uint32_t posadj;
@@ -24,7 +32,8 @@ struct OffsetVals {
     uint32_t neg;
     int16_t dadj;
     bool adjusted;
-    void reset(void) {
+    void reset(void)
+    {
         posadj = 0;
         negadj = 0;
         pos = 0;
@@ -34,10 +43,10 @@ struct OffsetVals {
     }
 };
 
-class LTC2668  // Linear Technologies 2668 16 channel 16-bit DAC chip with SPI interface
+class LTC2668 // Linear Technologies 2668 16 channel 16-bit DAC chip with SPI interface
 // The LTC2668 has 16 DACs.  Each of four LTC2668 use a different SPI channel for communication.
 {
-private:
+  private:
     VCO *m_vco;
     typeof(SPI) *m_spi;
     typeof(DigitalOut) *m_spinss;
@@ -51,8 +60,20 @@ private:
     int32_t m_din, m_voutdin;
     OffsetVals m_offsetvals;
     WidthFreq m_twidthfreq;
-public:
-    LTC2668(int8_t dacnum,  typeof(SPI) *spi, typeof(DigitalOut) *spi_nss, VCO *vco, bool printit, int8_t tshift);
+    uint16_t *m_wave;
+    uint16_t m_point;
+    bool m_stop;
+    int32_t m_waveoffset, m_holdoffset, m_offset;
+
+  public:
+    LTC2668(int8_t dacnum, typeof(SPI) *spi, typeof(DigitalOut) *spi_nss, VCO *vco, bool printit, int8_t tshift);
+    NextState Next(bool printit = false);
+    void Start(bool printit = false);
+    void Release(bool printit = false);
+    void Nexts(void);
+    void Setwave(const uint16_t *wave, int32_t wavenum);
+    void Dumpwave(void);
+    uint16_t *Getwave(void);
     VCO *GetVCO(void);
     int8_t m_dacnum;
     void SetVCO(VCO *vco);
@@ -60,14 +81,14 @@ public:
     bool DinOKoffset(int32_t din);
     void Voutprim(int32_t din); // Send digital input value to the DAC
     void Setspan(voltspan span);
-    void Voutall(int32_t din); // Send digital input value to all DACs on chip
-    void Vchk(int32_t din); // Send digital input value to the DAC
-    void Adj(int32_t width, bool printit=false); // adjust din up or down 1 toward frequency
-    void Wadj(bool printit=false); // adjust din up or down 1 toward frequency
-    void Vout(int32_t din, bool adjust=false); // Send digital input value to the DAC.
-                                               // Default to no adjustment.
-    void Voct(int8_t octave, int8_t halfstep, bool clr=false);
-    void Vmidi(int8_t midinumber, bool clr=false);
+    void Voutall(int32_t din);                     // Send digital input value to all DACs on chip
+    void Vchk(int32_t din);                        // Send digital input value to the DAC
+    void Adj(int32_t width, bool printit = false); // adjust din up or down 1 toward frequency
+    void Wadj(bool printit = false);               // adjust din up or down 1 toward frequency
+    void Vout(int32_t din, bool adjust = false);   // Send digital input value to the DAC.
+                                                   // Default to no adjustment.
+    void Voct(int8_t octave, int8_t halfstep, bool clr = false);
+    void Vmidi(int8_t midinumber, bool clr = false);
     int16_t GetVOUT(void);
     int32_t Getvoutdin(void);
     int32_t Getvoctdin(void);
@@ -75,6 +96,5 @@ public:
     void Reset(void);
     void Clradjusted(void);
 };
-
 
 #endif

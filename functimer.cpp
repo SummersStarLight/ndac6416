@@ -16,32 +16,38 @@ FuncTimer::FuncTimer(typeof(TIM2) ftimer, uint32_t timer_enable,
     m_prescaler = prescaler;
     m_IRQn = timer_IRQn;
     m_tnum = ftnum;
-    RCC->APB1ENR  |= m_enable;
+    RCC->APB1ENR |= m_enable;
     // count up + div by 1
     m_timer->CR1 = 0;
     m_timer->CR2 = 0;
-    m_timer->CR1     |= TIM_CR1_DIR; // downcount
+    m_timer->CR1 |= TIM_CR1_DIR;           // downcount
     m_timer->CR1 |= (uint16_t)TIM_CR1_URS; // only counter overflow generates an interrupt
     m_timer->CCMR1 = 0;
     m_timer->CCMR2 = 0;
-    set_reload(auto_reload);
-    m_timer->PSC      = m_prescaler; // prescaler = (108Mhz/(desired frequency)) -1)
-    m_timer->EGR      = TIM_EGR_UG;  // generate an update event to reload the prescaler value immediately
-    m_timer->CCER     = 0;           // Reset all
-    m_timer->SMCR    = RESET;
-    m_timer->SMCR    &= ~TIM_SMCR_SMS;             // Internal clock
-    m_timer->CR1     |= (uint16_t)TIM_CR1_CEN;     // Enable the TIM Counter
-    m_timer->SR = 0;           // clear all IC/OC flag
-    m_timer->DIER = 0;         // Disable all interrupt
+    SetReload(auto_reload);
+    m_timer->PSC = m_prescaler; // prescaler = (108Mhz/(desired frequency)) -1)
+    m_timer->EGR = TIM_EGR_UG;  // generate an update event to reload the prescaler value immediately
+    m_timer->CCER = 0;          // Reset all
+    m_timer->SMCR = RESET;
+    m_timer->SMCR &= ~TIM_SMCR_SMS;        // Internal clock
+    m_timer->CR1 |= (uint16_t)TIM_CR1_CEN; // Enable the TIM Counter
+    m_timer->SR = 0;                       // clear all IC/OC flag
+    m_timer->DIER = 0;                     // Disable all interrupt
     //m_timer->DIER = TIM_DIER_UIE;  // set only overflow
+    Clear();
     m_overflow = 0;
     m_s1 = 0, m_s2 = 0, m_s3 = 0, m_s4 = 0;
-    m_envcnt = 0, m_adsrcnt = 0;
-    std::vector<Envelope *>(m_envelopes).swap(m_envelopes); // clear and shrink vector
-    std::vector<Adsr *>(m_adsrs).swap(m_adsrs); // clear and shrink vector
+    m_envcnt = 0, m_adsrcnt = 0, m_daccnt = 0;
     NVIC_SetVector(m_IRQn, irq_func);
     NVIC_ClearPendingIRQ(m_IRQn);
     NVIC_EnableIRQ(m_IRQn);
+}
+
+void FuncTimer::Clear(void)
+{
+    std::vector<Envelope *>(m_envelopes).swap(m_envelopes); // clear and shrink vector
+    std::vector<Adsr *>(m_adsrs).swap(m_adsrs);             // clear and shrink vector
+    std::vector<LTC2668 *>(m_dacs).swap(m_dacs);            // clear and shrink vector
 }
 
 void FuncTimer::Add(Envelope *env)
@@ -54,9 +60,20 @@ void FuncTimer::Add(Adsr *adsr)
     m_adsrs.push_back(adsr);
 }
 
-void FuncTimer::set_reload(uint32_t auto_reload)
+void FuncTimer::Add(LTC2668 *dac)
+{
+    m_dacs.push_back(dac);
+}
+
+void FuncTimer::SetReload(int32_t auto_reload)
 {
     m_auto_reload = auto_reload;
+    m_timer->ARR = m_auto_reload;
+}
+
+void FuncTimer::IncReload(int32_t inc)
+{
+    m_auto_reload += inc;
     m_timer->ARR = m_auto_reload;
 }
 
@@ -64,7 +81,7 @@ void FuncTimer::Start()
 {
     __disable_irq();
     m_timer->SR = 0;
-    m_timer->DIER = TIM_DIER_UIE;      // set overflow
+    m_timer->DIER = TIM_DIER_UIE; // set overflow
     __enable_irq();
 }
 
@@ -104,15 +121,23 @@ uint16_t FuncTimer::overflow(void)
 
 void FuncTimer::irq_ic_timer(void)
 {
-    if (m_timer->SR & TIM_SR_UIF){             // counter overflow
+    if (m_timer->SR & TIM_SR_UIF)
+    { // counter overflow
         m_timer->SR &= ~TIM_SR_UIF;
         ++m_overflow;
-        for (m_envcnt = 0; m_envcnt<m_envelopes.size(); m_envcnt++) {
-            if (!m_envelopes[m_envcnt]->m_stopflag) m_envelopes[m_envcnt]->Next();
+        for (m_envcnt = 0; m_envcnt < m_envelopes.size(); m_envcnt++)
+        {
+            if (!m_envelopes[m_envcnt]->m_stopflag)
+                m_envelopes[m_envcnt]->Next();
         }
-        for (m_adsrcnt = 0; m_adsrcnt<m_adsrs.size(); m_adsrcnt++) {
-            if (!m_adsrs[m_adsrcnt]->m_stopflag) m_adsrs[m_adsrcnt]->Next();
+        for (m_adsrcnt = 0; m_adsrcnt < m_adsrs.size(); m_adsrcnt++)
+        {
+            if (!m_adsrs[m_adsrcnt]->m_stopflag)
+                m_adsrs[m_adsrcnt]->Next();
+        }
+        for (m_daccnt = 0; m_daccnt < m_dacs.size(); m_daccnt++)
+        {
+            m_dacs[m_daccnt]->Next();
         }
     }
 }
-
